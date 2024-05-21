@@ -139,18 +139,27 @@ if (array_key_exists('username', $_GET) && isset($_GET['username']) &&
                 // this left piece of the query is the same for all 
                 $sql0 = sprintf("INSERT INTO %s (username, groupname, priority) VALUES ",
                                 $configValues['CONFIG_DB_TBL_RADUSERGROUP']);
+                $sql1 = sprintf("DELETE FROM %s WHERE username = %s ",
+                                $configValues['CONFIG_DB_TBL_RADUSERGROUP']);
                                 
                 $sql_piece_format = "('%s', '%s', 0)";
+                $sql_piece_format1 = "('%s')";
                 $sql_pieces = array();
+                $sql_pieces1 = array();
                 
                 foreach ($to_disable as $username) {
                     $sql_pieces[] = sprintf($sql_piece_format, $username, $disabled_groupname);
+                }
+                foreach ($to_disable as $username) {
+                    $sql_pieces1[] = sprintf($sql_piece_format1, $username);
                 }
                 
                 // actually execute the query for disabling users
                 $sql = $sql0 . implode(", ", $sql_pieces);
                 $res = $dbSocket->query($sql);
-                
+                $sql = $sql1 . implode(", ", $sql_pieces);
+                $res = $dbSocket->query($sql);
+
                 $to_disable_list = implode(", ", $to_disable);
                 $to_disable_list_enc = htmlspecialchars($to_disable_list, ENT_QUOTES, 'UTF-8');
             
